@@ -48,13 +48,13 @@ export function logRequest(
 
   // Get wallet address from context (set by x402 middleware)
   const contextVars = c.var as BasisContext;
-  const walletAddress = contextVars.wallet_address || null;
+  const walletAddress = contextVars.wallet_address ?? null;
   const txHash = contextVars.tx_hash || meta.tx_hash || null;
 
   // Prepare log entry
   const logEntry: SupabaseRequestLog = {
     tool_name: "basis_fetch",
-    wallet_address: walletAddress || undefined,
+    wallet_address: walletAddress,
     status: status,
     meta: {
       ...meta,
