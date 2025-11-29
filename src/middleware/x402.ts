@@ -74,6 +74,17 @@ async function verifyPayment(
   txHash: `0x${string}`,
   expectedRecipient: Address
 ): Promise<{ valid: boolean; walletAddress?: Address; error?: string }> {
+  // Detect test/placeholder transaction hashes
+  const isTestHash = /^0x(1234567890abcdef|0000000000000000|ffffffffffffffff)/i.test(txHash) ||
+                     txHash === "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef";
+  
+  if (isTestHash) {
+    return {
+      valid: false,
+      error: "Invalid transaction hash: This appears to be a test/placeholder hash. Please use a real transaction hash from Base Mainnet.",
+    };
+  }
+  
   try {
     // Create public client for Base Mainnet
     const client = createPublicClient({
@@ -123,9 +134,39 @@ async function verifyPayment(
       walletAddress: validTransfer.from,
     };
   } catch (error: any) {
+    // Handle specific viem errors
+    const errorMessage = error?.message || "";
+    
+    // Check for transaction not found errors
+    if (
+      errorMessage.includes("could not be found") ||
+      errorMessage.includes("Transaction receipt") ||
+      errorMessage.includes("not found") ||
+      error?.name === "TransactionReceiptNotFoundError"
+    ) {
+      return {
+        valid: false,
+        error: `Transaction receipt with hash "${txHash}" could not be found. The transaction may not be processed on a block yet, or the hash may be invalid. Please ensure the transaction has been confirmed on Base Mainnet.`,
+      };
+    }
+    
+    // Check for RPC/network errors
+    if (
+      errorMessage.includes("fetch") ||
+      errorMessage.includes("network") ||
+      errorMessage.includes("timeout") ||
+      errorMessage.includes("ECONNREFUSED")
+    ) {
+      return {
+        valid: false,
+        error: "Failed to connect to Base Mainnet RPC. Please try again later.",
+      };
+    }
+    
+    // Generic error fallback
     return {
       valid: false,
-      error: error?.message || "Failed to verify transaction on blockchain",
+      error: errorMessage || "Failed to verify transaction on blockchain",
     };
   }
 }
