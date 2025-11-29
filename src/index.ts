@@ -68,8 +68,32 @@ app.post("/test", async (c) => {
     const testUrl = "https://test.basis.sh/test";
     const testContent = "This is a test payload for Basis proof verification";
     
-    // Generate proof
-    const proof = await signContent(testContent, testUrl, privateKey);
+    // Generate proof (this will validate the private key format)
+    let proof;
+    try {
+      proof = await signContent(testContent, testUrl, privateKey);
+    } catch (error: any) {
+      return c.json(
+        {
+          error: "Private Key Error",
+          message: error?.message || "Failed to generate proof",
+          test_results: {
+            proof_exists: false,
+            signer_matches: false,
+            latency_ms: Date.now() - start,
+            private_key_format_valid: false,
+            error_details: error?.message,
+          },
+          troubleshooting: {
+            issue: "BASIS_PRIVATE_KEY format is invalid",
+            expected_format: "0x followed by 64 hexadecimal characters (66 total)",
+            example: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+            check: "Ensure your Cloudflare Workers secret is stored exactly as shown in the example above, with no extra spaces or newlines",
+          },
+        },
+        500
+      );
+    }
     
     const end = Date.now();
     const latency = end - start;

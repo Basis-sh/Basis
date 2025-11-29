@@ -38,7 +38,33 @@ export async function signContent(
     throw new Error("CRITICAL: BASIS_PRIVATE_KEY is missing. Cannot notarize.");
   }
 
-  const account = privateKeyToAccount(privateKey);
+  // Normalize private key format
+  // Ensure it starts with 0x and is the correct length
+  let normalizedKey: `0x${string}`;
+  if (privateKey.startsWith("0x")) {
+    normalizedKey = privateKey as `0x${string}`;
+  } else {
+    // Add 0x prefix if missing
+    normalizedKey = `0x${privateKey}` as `0x${string}`;
+  }
+
+  // Validate format: should be 0x + 64 hex characters = 66 total
+  if (normalizedKey.length !== 66) {
+    throw new Error(
+      `CRITICAL: BASIS_PRIVATE_KEY has invalid format. Expected 66 characters (0x + 64 hex), got ${normalizedKey.length}. ` +
+      `Please ensure your private key is a valid hex string starting with 0x.`
+    );
+  }
+
+  // Validate hex characters
+  const hexPattern = /^0x[0-9a-fA-F]{64}$/;
+  if (!hexPattern.test(normalizedKey)) {
+    throw new Error(
+      "CRITICAL: BASIS_PRIVATE_KEY contains invalid characters. Must be a valid hex string (0-9, a-f, A-F)."
+    );
+  }
+
+  const account = privateKeyToAccount(normalizedKey);
   const timestamp = new Date().toISOString();
 
   // 1. Create the unique fingerprint of this event
