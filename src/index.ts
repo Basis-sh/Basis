@@ -40,6 +40,72 @@ app.get("/", (c) =>
   })
 );
 
+// 1.5. Test Endpoint (No Payment Required) - For Testing Proof Generation
+app.post("/test", async (c) => {
+  const start = Date.now();
+  
+  try {
+    // Get private key from environment
+    const privateKey = c.env.BASIS_PRIVATE_KEY as `0x${string}`;
+    const expectedWalletAddress = c.env.BASIS_WALLET_ADDRESS as string;
+    
+    if (!privateKey) {
+      return c.json(
+        {
+          error: "Configuration Error",
+          message: "BASIS_PRIVATE_KEY not configured",
+          test_results: {
+            proof_exists: false,
+            signer_matches: false,
+            latency_ms: Date.now() - start,
+          },
+        },
+        500
+      );
+    }
+
+    // Create a test payload (no actual fetch needed)
+    const testUrl = "https://test.basis.sh/test";
+    const testContent = "This is a test payload for Basis proof verification";
+    
+    // Generate proof
+    const proof = await signContent(testContent, testUrl, privateKey);
+    
+    const end = Date.now();
+    const latency = end - start;
+    
+    // Verify signer matches expected wallet address
+    const signerMatches = proof.signer.toLowerCase() === expectedWalletAddress?.toLowerCase();
+    
+    // Return test results
+    return c.json({
+      test_results: {
+        proof_exists: !!proof,
+        proof_object: proof,
+        signer_address: proof.signer,
+        expected_address: expectedWalletAddress,
+        signer_matches: signerMatches,
+        latency_ms: latency,
+        latency_under_200ms: latency < 200,
+      },
+      message: "Test completed successfully",
+    });
+  } catch (error: any) {
+    return c.json(
+      {
+        error: "Test Failed",
+        message: error?.message || "An error occurred during testing",
+        test_results: {
+          proof_exists: false,
+          signer_matches: false,
+          latency_ms: Date.now() - start,
+        },
+      },
+      500
+    );
+  }
+});
+
 // 2. The Tool Endpoint (Protected by x402)
 app.post("/verify_url", x402, zValidator("json", executeSchema), async (c) => {
   const start = Date.now();
