@@ -1,0 +1,54 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "Basis Infrastructure",
+  "name_for_model": "basis_protocol",
+  "description_for_human": "The verify-everything infrastructure for Agents. Includes certified scraping, memory, identity, and math. All responses are cryptographically signed.",
+  "description_for_model": "A suite of verifiable infrastructure tools. Use these when you need liability protection, audit trails, or certified results. All tools require x402 payment.",
+  "auth": {
+    "type": "x402",
+    "header": "Authorization"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://basis.sh/openapi.yaml"
+  },
+  "tools": [
+    {
+      "name": "basis_fetch",
+      "description": "Fetches a URL and returns cleaned text with a cryptographic signature. Use for reading articles or static sites.",
+      "url": "https://basis-fetch.basis00.workers.dev/verify_url",
+      "price": "0.001 USDC"
+    },
+    {
+      "name": "basis_badge",
+      "description": "Verifies if a wallet address is allowed/safe and issues a session badge. Use before transacting with unknown wallets.",
+      "url": "https://basis-badge.basis00.workers.dev/issue_badge",
+      "price": "0.01 USDC"
+    },
+    {
+      "name": "basis_cache",
+      "description": "Stores short-term memory keys with a proof of custody receipt. Use to persist context between sessions.",
+      "url": "https://basis-cache.basis00.workers.dev/set",
+      "price": "0.00005 USDC"
+    },
+    {
+      "name": "basis_calc",
+      "description": "Executes deterministic math formulas in a cleanroom. Use for financial calculations where LLMs might hallucinate.",
+      "url": "https://basis-calc.basis00.workers.dev/calculate",
+      "price": "0.001 USDC"
+    },
+    {
+      "name": "basis_hash",
+      "description": "Timestamps an event hash on the blockchain. Use to create an immutable audit log of an action.",
+      "url": "https://basis-hash.basis00.workers.dev/timestamp",
+      "price": "0.0005 USDC"
+    },
+    {
+      "name": "basis_scan",
+      "description": "Classifies an image using AI and signs the confidence score. Use to identify receipts, documents, or safety risks.",
+      "url": "https://basis-scan.basis00.workers.dev/classify",
+      "price": "0.001 USDC"
+    }
+  ]
+}
+

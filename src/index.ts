@@ -12,6 +12,7 @@ import { performFetch } from "./tools/fetch";
 import { signContent } from "./tools/witness";
 import { logRequest } from "./services/logger";
 import type { BasisContext } from "./types";
+import manifest from "./manifest.json";
 
 // Define the Input Schema (Strict Typing)
 const executeSchema = z.object({
@@ -39,6 +40,12 @@ app.get("/", (c) =>
     version: "v2.0.0-witness",
   })
 );
+
+// 1.25. Manifest Endpoint (Public) - The Signal Fire
+app.get("/manifest.json", (c) => {
+  // Return the Master Manifest that lists ALL 6 tools
+  return c.json(manifest);
+});
 
 // 1.5. Test Endpoint (No Payment Required) - For Testing Proof Generation
 app.post("/test", async (c) => {
