@@ -1,0 +1,16 @@
+name = "basis-badge"
+main = "src/index-badge.ts"
+compatibility_date = "2024-04-01"
+
+# TODO: Add BASIS_WALLET_ADDRESS as a secret using:
+# wrangler secret put BASIS_WALLET_ADDRESS
+
+# TODO: Add BASIS_PRIVATE_KEY as a secret using:
+# wrangler secret put BASIS_PRIVATE_KEY
+
+# KV Namespace for Identity Storage (Blocklist/Allowlist)
+[[kv_namespaces]]
+binding = "IDENTITY_KV"
+id = "3ad72726f7ab4343a6e3f76160adc2b0"
+preview_id = "5f691c4b75244432b5561574ccc471db"
+

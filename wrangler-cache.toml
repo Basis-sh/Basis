@@ -1,0 +1,16 @@
+name = "basis-cache"
+main = "src/index-cache.ts"
+compatibility_date = "2024-04-01"
+
+# TODO: Add BASIS_WALLET_ADDRESS as a secret using:
+# wrangler secret put BASIS_WALLET_ADDRESS
+
+# TODO: Add BASIS_PRIVATE_KEY as a secret using:
+# wrangler secret put BASIS_PRIVATE_KEY
+
+# KV Namespace for Memory Storage
+[[kv_namespaces]]
+binding = "MEMORY_KV"
+id = "f84cefd29a3f42a9b34a6ef1b4c3bb1a"
+preview_id = "f1225b4ba8664745906b55df0f43a9e0"
+

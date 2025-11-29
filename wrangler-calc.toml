@@ -1,0 +1,10 @@
+name = "basis-calc"
+main = "src/index-calc.ts"
+compatibility_date = "2024-04-01"
+
+# TODO: Add BASIS_WALLET_ADDRESS as a secret using:
+# wrangler secret put BASIS_WALLET_ADDRESS
+
+# TODO: Add BASIS_PRIVATE_KEY as a secret using:
+# wrangler secret put BASIS_PRIVATE_KEY
+

@@ -1,0 +1,17 @@
+name = "basis-fetch"
+main = "src/index.ts"
+compatibility_date = "2024-04-01"
+
+# TODO: Add BASIS_WALLET_ADDRESS as a secret using:
+# wrangler secret put BASIS_WALLET_ADDRESS
+
+# KV Namespace for caching
+[[kv_namespaces]]
+binding = "BASIS_KV"
+id = "6555d8012b154182b1e52744c76e29e7"
+preview_id = "721360e4d22744a3b29532189753739a"
+
+# AI Binding for Cloudflare Workers AI
+# This enables access to AI models for future "Basis: Scan" functionality
+[ai]
+binding = "AI"

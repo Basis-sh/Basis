@@ -1,0 +1,140 @@
+# Basis: Fetch - MCP Server for URL Fetching
+
+## Overview
+
+Basis: Fetch is a high-performance, edge-native MCP (Model Context Protocol) server running on Cloudflare Workers. It provides rapid URL fetching and HTML-to-text conversion capabilities optimized for static websites. The service implements pay-per-use monetization through the x402 payment protocol, requiring blockchain transaction verification for each request.
+
+## Capabilities
+
+- **URL Fetching**: Rapidly fetch and convert URLs to clean, text-only content
+- **HTML Cleaning**: Automatically removes scripts, styles, SVG elements, and images
+- **Edge Performance**: Sub-5-second response times with global edge distribution
+- **Token Optimization**: Collapses whitespace and newlines to minimize token usage
+- **Error Handling**: Graceful handling of blocked or missing targets (403/404)
+
+## Payment Requirements
+
+This service requires x402 payment protocol compliance. All execution requests must include a valid transaction hash in the `Authorization` header.
+
+### Payment Details
+- **Chain**: Base
+- **Network**: Mainnet
+- **Currency**: USDC
+- **Amount**: 0.001 USDC per request
+- **Protocol**: x402 Payment Required (HTTP 402)
+
+### Authorization Header Format
+The `Authorization` header must contain a valid transaction hash:
+- Must start with `0x` (Ethereum/Base format)
+- Must be longer than 60 characters
+- Example: `Authorization: 0x1234567890abcdef...` (full transaction hash)
+
+## API Endpoints
+
+### GET /
+Health check endpoint. Returns service status and current timestamp.
+
+### GET /manifest
+Returns MCP tool definition manifest. Public endpoint, no payment required.
+
+### POST /execute
+Executes the `basis_fetch` tool. Requires x402 payment verification.
+
+## Input Schema
+
+The `/execute` endpoint accepts the following JSON structure:
+
+```json
+{
+  "tool": "basis_fetch",
+  "args": {
+    "url": "https://example.com"
+  }
+}
+```
+
+### Schema Definition
+
+```json
+{
+  "type": "object",
+  "properties": {
+    "tool": {
+      "type": "string",
+      "enum": ["basis_fetch"],
+      "description": "The tool name to execute"
+    },
+    "args": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "The URL to fetch and convert to text. Must be a valid HTTP/HTTPS URL."
+        }
+      },
+      "required": ["url"]
+    }
+  },
+  "required": ["tool", "args"]
+}
+```
+
+## Response Format
+
+### Success Response
+```json
+{
+  "url": "https://example.com",
+  "content": "Cleaned text content from the webpage...",
+  "status": 200,
+  "latency_ms": 1234
+}
+```
+
+### Error Response (4xx)
+```json
+{
+  "status": 403,
+  "error": "Target blocked or missing"
+}
+```
+
+### Payment Required Response (402)
+```json
+{
+  "error": "Payment Required",
+  "payment": {
+    "chain": "base",
+    "network": "mainnet",
+    "currency": "USDC",
+    "amount": "0.001",
+    "recipient": "0xYourWalletAddressHere"
+  }
+}
+```
+
+## Technical Specifications
+
+- **Runtime**: Cloudflare Workers (Edge Computing)
+- **Framework**: Hono (Lightweight, Edge-compatible)
+- **Language**: TypeScript
+- **Validation**: Zod schema validation
+- **Timeout**: 5 seconds maximum fetch time
+- **User-Agent**: Standard Chrome on Windows (prevents bot detection)
+
+## Use Cases
+
+- Static website content extraction
+- Documentation scraping
+- Article text extraction
+- Web content preprocessing for LLM consumption
+- Rapid URL-to-text conversion for AI agents
+
+## Limitations
+
+- Optimized for static websites
+- 5-second timeout limit
+- Automatically blocks 403/404 responses
+- Removes all JavaScript, CSS, SVG, and image content
+
