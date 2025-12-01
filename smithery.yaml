@@ -1,0 +1,13 @@
+name: "Basis Protocol"
+description: "The Liability Layer for AI Agents. Verifiable Scraping, Memory, and Identity."
+version: "1.0.0"
+manifest_url: "https://basis-fetch.basis00.workers.dev/manifest.json"
+repository: "https://github.com/Basis-sh/Basis"
+tags:
+  - infrastructure
+  - verification
+  - web3
+  - x402
+  - mcp
+  - cloudflare-workers
+vendor: "Basis"
