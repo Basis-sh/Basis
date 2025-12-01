@@ -1,0 +1,34 @@
+import secrets
+
+from eth_account import Account
+
+# Enable Mnemonic features (standard security practice)
+Account.enable_unaudited_hdwallet_features()
+
+def generate_basis_identity():
+    print("--- GENERATING BASIS IDENTITY ---\n")
+    
+    # 1. Generate a secure random 32-byte hex string
+    # This is the source of entropy. It is mathematically impossible to guess.
+    extra_security = secrets.token_hex(32)
+    
+    # 2. Create the Account
+    # This derives the keys from the entropy.
+    acct = Account.create(extra_security)
+    
+    # 3. Output the details
+    print("✅ IDENTITY CREATED SUCCESSFULLY")
+    print("---------------------------------------------------")
+    print(f"PUBLIC ADDRESS (The Mailbox):  {acct.address}")
+    print("---------------------------------------------------")
+    print(f"PRIVATE KEY (The Key):         {acct.key.hex()}")
+    print("---------------------------------------------------")
+    print("\n⚠️  SECURITY WARNING:")
+    print("1. Copy the 'PUBLIC ADDRESS' and run: npx wrangler secret put BASIS_WALLET_ADDRESS")
+    print("2. Copy the 'PRIVATE KEY'    and run: npx wrangler secret put BASIS_PRIVATE_KEY")
+    print("3. DELETE this output history or file after you are done.")
+    print("4. NEVER share the Private Key with anyone.")
+
+if __name__ == "__main__":
+    generate_basis_identity()
+

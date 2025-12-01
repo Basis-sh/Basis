@@ -48,6 +48,12 @@
       "description": "Classifies an image using AI and signs the confidence score. Use to identify receipts, documents, or safety risks.",
       "url": "https://basis-scan.basis00.workers.dev/classify",
       "price": "0.001 USDC"
+    },
+    {
+      "name": "basis_signal",
+      "description": "Provides a signed, timestamped risk assessment of a crypto wallet address or domain. Use as an instant risk oracle before transacting or interacting with unknown entities.",
+      "url": "https://basis-signal.basis00.workers.dev/check_risk",
+      "price": "0.001 USDC"
     }
   ]
 }

@@ -18,6 +18,7 @@ import type { BasisContext, SupabaseRequestLog } from "../types";
  * @param c - Hono context with environment variables and execution context
  * @param status - HTTP status code of the response
  * @param meta - Additional metadata to log (latency, url, witness_id, etc.)
+ * @param toolName - Optional tool name (defaults to "basis_fetch" for backward compatibility)
  */
 export function logRequest(
   c: Context,
@@ -28,7 +29,8 @@ export function logRequest(
     witness_id?: string;
     tx_hash?: string;
     [key: string]: any;
-  }
+  },
+  toolName: string = "basis_fetch"
 ): void {
   // Get execution context for async operations
   const executionCtx = c.executionCtx;
@@ -53,7 +55,7 @@ export function logRequest(
 
   // Prepare log entry
   const logEntry: SupabaseRequestLog = {
-    tool_name: "basis_fetch",
+    tool_name: toolName,
     wallet_address: walletAddress,
     status: status,
     meta: {
